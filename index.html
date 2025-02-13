@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting...</title>
+    <script>
+        (async () => {
+            // Get tagname from the URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const tagname = urlParams.get("tagname") || "Unknown";
+
+            // Call Power Automate Flow
+            await fetch("https://tinyurl.com/47z878zv", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ tagname })
+            });
+
+            // Redirect to the final website
+            window.location.href = "https://caplanc.org/access-resources/safety-empowerment/domestic-violence-services/";
+        })();
+    </script>
+</head>
+<body>
+    <p>Redirecting...</p>
+</body>
+</html>
