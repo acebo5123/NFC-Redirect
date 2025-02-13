@@ -6,18 +6,28 @@
     <title>Redirecting...</title>
     <script>
         (async () => {
-            // Get tagname from the URL parameters
+            // Extract the tag name from the URL
             const urlParams = new URLSearchParams(window.location.search);
-            const tagname = urlParams.get("tagname") || "Unknown";
+            const tagname = urlParams.get("tagname");
 
-            // Call Power Automate Flow
-            await fetch("https://tinyurl.com/47z878zv", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ tagname })
-            });
+            // Ensure tagname is not empty
+            if (!tagname) {
+                console.error("Tag name missing from URL.");
+                return;
+            }
 
-            // Redirect to the final website
+            // Send data to Power Automate
+            try {
+                await fetch("https://tinyurl.com/47z878zv", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ tagname: tagname })
+                });
+            } catch (error) {
+                console.error("Error sending data to Power Automate:", error);
+            }
+
+            // Redirect the user to the final website
             window.location.href = "https://caplanc.org/access-resources/safety-empowerment/domestic-violence-services/";
         })();
     </script>
