@@ -1,38 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redirecting...</title>
-    <script>
-        (async () => {
-            // Extract the tag name from the URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const tagname = urlParams.get("tagname");
+  <meta charset="UTF-8">
+  <title>Processing and Redirecting...</title>
+  <script type="text/javascript">
+    // Function to parse query parameters from the URL
+    function getQueryParams() {
+      const params = {};
+      const queryString = window.location.search.substring(1);
+      const regex = /([^&=]+)=([^&]*)/g;
+      let match;
+      while ((match = regex.exec(queryString)) !== null) {
+        params[decodeURIComponent(match[1])] = decodeURIComponent(match[2]);
+      }
+      return params;
+    }
 
-            // Ensure tagname is not empty
-            if (!tagname) {
-                console.error("Tag name missing from URL.");
-                return;
-            }
+    // Function to send data to the Power Automate flow
+    async function sendDataToFlow(data) {
+      // Your Power Automate HTTP trigger URL
+      const flowUrl = "https://prod-103.westus.logic.azure.com:443/workflows/b86f09a26088493093722b98e7505c78/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=7UkMbtq0xWf7PhNtIuqYDDJv7O4Pjsxcl7AcYhzx3YU";
+      
+      try {
+        const response = await fetch(flowUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data)
+        });
+        // Optional: You can check response.ok or log the result
+        if (!response.ok) {
+          console.error("Error sending data to Power Automate:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Fetch error:", error);
+      }
+    }
 
-            // Send data to Power Automate
-            try {
-                await fetch("https://tinyurl.com/47z878zv", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ tagname: tagname })
-                });
-            } catch (error) {
-                console.error("Error sending data to Power Automate:", error);
-            }
+    window.onload = async function() {
+      // Extract parameters from URL
+      const params = getQueryParams();
+      
+      // Ensure required parameters exist. If scanTime is missing, add the current time.
+      if (!params.scanTime) {
+        params.scanTime = new Date().toISOString();
+      }
+      
+      // Prepare the data object to send to the flow.
+      const dataToSend = {
+        tagName: params.tagName || "",
+        scanTime: params.scanTime,
+        referral: params.referral || "",
+        programName: params.programName || ""
+      };
 
-            // Redirect the user to the final website
-            window.location.href = "https://caplanc.org/access-resources/safety-empowerment/domestic-violence-services/";
-        })();
-    </script>
+      // Send the data to the Power Automate flow (which will write to SharePoint)
+      await sendDataToFlow(dataToSend);
+      
+      // After sending data, redirect the user to the target website.
+      // Optionally, you can append query parameters if desired.
+      const redirectUrl = "https://caplanc.org/access-resources/safety-empowerment/domestic-violence-services/";
+      window.location.href = redirectUrl;
+    };
+  </script>
 </head>
 <body>
-    <p>Redirecting...</p>
+  <p>Processing your scan and redirecting, please wait...</p>
 </body>
 </html>
