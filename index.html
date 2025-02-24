@@ -29,7 +29,6 @@
           },
           body: JSON.stringify(data)
         });
-        // Optional: You can check response.ok or log the result
         if (!response.ok) {
           console.error("Error sending data to Power Automate:", response.statusText);
         }
@@ -49,7 +48,7 @@
       
       // Prepare the data object to send to the flow.
       const dataToSend = {
-        tagName: params.tagName || "",
+        tagname: params.tagname || "",
         scanTime: params.scanTime,
         referral: params.referral || "",
         programName: params.programName || ""
@@ -59,7 +58,6 @@
       await sendDataToFlow(dataToSend);
       
       // After sending data, redirect the user to the target website.
-      // Optionally, you can append query parameters if desired.
       const redirectUrl = "https://caplanc.org/access-resources/safety-empowerment/domestic-violence-services/";
       window.location.href = redirectUrl;
     };
