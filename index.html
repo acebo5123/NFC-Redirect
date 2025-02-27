@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html>
 <head>
   <meta charset="UTF-8">
@@ -50,11 +50,11 @@
       const dataToSend = {
         tagname: params.tagname || "",
         scanTime: params.scanTime,
-        referral: params.referral || "",
-        programName: params.programName || ""
+        Location: params.Location || "",
+        Department: params.Department || ""
       };
 
-      // Send the data to the Power Automate flow (which will write to SharePoint)
+      // Send the data to the Power Automate flow
       await sendDataToFlow(dataToSend);
       
       // After sending data, redirect the user to the target website.
